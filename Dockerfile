@@ -54,9 +54,10 @@ COPY --from=builder /app/characters ./characters
 # Set host and port for Render
 ENV HOST="0.0.0.0"
 ENV PORT=10000
+ENV SERVER_PORT=10000
 
 # Expose the port Render expects
 EXPOSE 10000
 
 # Set the command to run the application
-CMD ["sh", "-c", "PORT=10000 pnpm start --character=characters/claude_agent.character.json"]
+CMD ["sh", "-c", "SERVER_PORT=10000 HOST=0.0.0.0 pnpm start --character=characters/claude_agent.character.json"]
