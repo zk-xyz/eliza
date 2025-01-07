@@ -11,6 +11,9 @@ RUN npm install -g pnpm@9.4.0 && \
 # Set Python 3 as the default python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+# Set Node memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
 # Set the working directory
 WORKDIR /app
 
@@ -51,5 +54,15 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
+# Set Node memory limit for runtime
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
+# Render environment variables
+ENV PORT=10000
+ENV HOST="0.0.0.0"
+
+# Expose the port
+EXPOSE 10000
+
 # Set the command to run the application
-CMD ["pnpm", "start"]
+CMD ["pnpm", "start", "--character=characters/claude_agent.character.json"]
