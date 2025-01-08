@@ -51,13 +51,8 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-# Set host and port for Render
-ENV HOST="0.0.0.0"
-ENV PORT=10000
-ENV SERVER_PORT=10000
-
-# Expose the port Render expects
-EXPOSE 10000
+# Let Render determine the port
+ENV NODE_ENV=production
 
 # Set the command to run the application
-CMD ["sh", "-c", "SERVER_PORT=10000 HOST=0.0.0.0 pnpm start --character=characters/claude_agent.character.json"]
+CMD ["pnpm", "start", "--character=characters/claude_agent.character.json"]
