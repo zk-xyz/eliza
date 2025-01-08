@@ -27,6 +27,10 @@
     "devDependencies": {
         "@commitlint/cli": "18.6.1",
         "@commitlint/config-conventional": "18.6.3",
+        "@types/body-parser": "1.19.5",
+        "@types/cors": "2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/multer": "^1.4.12",
         "@typescript-eslint/eslint-plugin": "8.16.0",
         "@typescript-eslint/parser": "8.16.0",
         "@vitest/eslint-plugin": "1.1.13",
@@ -41,9 +45,9 @@
         "turbo": "2.3.3",
         "typedoc": "0.26.11",
         "typescript": "5.6.3",
+        "viem": "2.21.58",
         "vite": "5.4.11",
-        "vitest": "2.1.5",
-        "viem": "2.21.58"
+        "vitest": "2.1.5"
     },
     "pnpm": {
         "overrides": {
@@ -59,7 +63,10 @@
         "@deepgram/sdk": "^3.9.0",
         "@vitest/eslint-plugin": "1.0.1",
         "amqplib": "0.10.5",
+        "body-parser": "^1.20.3",
+        "cors": "2.8.5",
         "csv-parse": "5.6.0",
+        "multer": "1.4.5-lts.1",
         "ollama-ai-provider": "0.16.1",
         "optional": "0.1.4",
         "pnpm": "9.14.4",
