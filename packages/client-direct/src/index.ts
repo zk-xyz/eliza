@@ -609,13 +609,20 @@ export class DirectClient {
         this.agents.delete(runtime.agentId);
     }
 
-    public start(port: number) {
-        this.server = this.app.listen(port, () => {
+    public start(port?: number) {
+        const serverPort = port || parseInt(process.env.PORT || '3000', 10);
+        const host = '0.0.0.0';  // Always use 0.0.0.0 for Render compatibility
+    
+        this.server = this.app.listen(serverPort, host, () => {
             elizaLogger.success(
-                `REST API bound to 0.0.0.0:${port}. If running locally, access it at http://localhost:${port}.`
+                `REST API bound to ${host}:${serverPort}${
+                    process.env.NODE_ENV !== 'production'
+                        ? `. Access it at http://localhost:${serverPort}`
+                        : ''
+                }`
             );
         });
-
+    
         // Handle graceful shutdown
         const gracefulShutdown = () => {
             elizaLogger.log("Received shutdown signal, closing server...");
@@ -623,7 +630,7 @@ export class DirectClient {
                 elizaLogger.success("Server closed successfully");
                 process.exit(0);
             });
-
+    
             // Force close after 5 seconds if server hasn't closed
             setTimeout(() => {
                 elizaLogger.error(
@@ -632,7 +639,7 @@ export class DirectClient {
                 process.exit(1);
             }, 5000);
         };
-
+    
         // Handle different shutdown signals
         process.on("SIGTERM", gracefulShutdown);
         process.on("SIGINT", gracefulShutdown);
@@ -651,7 +658,7 @@ export const DirectClientInterface: Client = {
     start: async (_runtime: IAgentRuntime) => {
         elizaLogger.log("DirectClientInterface start");
         const client = new DirectClient();
-        const serverPort = parseInt(settings.SERVER_PORT || "3000");
+        const serverPort = parseInt(process.env.PORT || settings.SERVER_PORT || "3000", 10);
         client.start(serverPort);
         return client;
     },
