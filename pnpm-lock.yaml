@@ -881,6 +881,9 @@ importers:
       uuid:
         specifier: 11.0.3
         version: 11.0.3
+      youtube-dl-exec:
+        specifier: 3.0.10
+        version: 3.0.10
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -32455,7 +32458,7 @@ snapshots:
 
   debug-fabulous@2.0.2:
     dependencies:
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.0(supports-color@5.5.0)
       memoizee: 0.4.17
     transitivePeerDependencies:
       - supports-color
