@@ -1,6 +1,10 @@
-/// <reference path="./tavily.d.ts" />
-
+// Augment the NodeJS namespace to include Buffer
 declare global {
-    interface Buffer extends Uint8Array {}
+    namespace NodeJS {
+        interface Global {
+            Buffer: typeof Buffer;
+        }
+    }
 }
+
 export {};
