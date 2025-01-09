@@ -881,9 +881,6 @@ importers:
       uuid:
         specifier: 11.0.3
         version: 11.0.3
-      youtube-dl-exec:
-        specifier: 3.0.10
-        version: 3.0.10
       zod:
         specifier: 3.23.8
         version: 3.23.8
