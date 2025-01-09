@@ -20,7 +20,7 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsup --format esm --dts",
+        "build": "tsup --format esm --dts --tsconfig tsconfig.build.json",
         "lint": "eslint --fix  --cache .",
         "watch": "tsc --watch",
         "dev": "tsup --format esm --dts --watch",
