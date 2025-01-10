@@ -27,11 +27,12 @@
             "@elizaos/source"
         ],
         "paths": {
-            "@tavily/core": ["./node_modules/@tavily/core", "./src/types/tavily.d.ts"]
+            "tavily": ["./node_modules/tavily", "./types/tavily.d.ts"]
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "types/**/*"
     ],
     "exclude": [
         "node_modules",

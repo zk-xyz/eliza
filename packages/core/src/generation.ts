@@ -41,7 +41,6 @@ import {
     TokenizerType,
 } from "./types.ts";
 import { fal } from "@fal-ai/client";
-import { tavily } from "@tavily/core";
 
 type Tool = CoreTool<any, any>;
 type StepResult = AIStepResult<any>;
@@ -1496,14 +1495,31 @@ export const generateWebSearch = async (
         if (!apiKey) {
             throw new Error("TAVILY_API_KEY is not set");
         }
-        const tvly = tavily({ apiKey });
-        const response = await tvly.search(query, {
+        
+        // Import and initialize Tavily client
+        const Tavily = (await import("tavily")).Tavily;
+        const client = new Tavily({
+            apiKey: apiKey
+        });
+
+        // Make the search request
+        const tavilyResponse = await client.search(query, {
             includeAnswer: true,
             maxResults: 3,
-            topic: "general",
             searchDepth: "basic",
             includeImages: false,
         });
+
+        // Transform the response to match SearchResponse type
+        const response: SearchResponse = {
+            results: tavilyResponse.results.map(result => ({
+                ...result,
+                score: 1,  // Default score
+                publishedDate: new Date().toISOString()  // Current date as default
+            })),
+            answer: tavilyResponse.answer
+        };
+        
         return response;
     } catch (error) {
         elizaLogger.error("Error:", error);
