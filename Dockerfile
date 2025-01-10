@@ -8,6 +8,9 @@ RUN npm install -g pnpm@9.4.0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Prevent youtube-dl-exec from trying to update
+ENV YTDL_NO_UPDATE=1
+
 # Set Python 3 as the default python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
