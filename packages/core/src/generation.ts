@@ -1496,9 +1496,9 @@ export const generateWebSearch = async (
             throw new Error("TAVILY_API_KEY is not set");
         }
         
-        // Import and initialize Tavily client
-        const Tavily = (await import("tavily")).Tavily;
-        const client = new Tavily({
+        // Import @tavily/core correctly
+        const tavily = await import("@tavily/core");
+        const client = tavily.tavily({
             apiKey: apiKey
         });
 
@@ -1522,7 +1522,7 @@ export const generateWebSearch = async (
         
         return response;
     } catch (error) {
-        elizaLogger.error("Error:", error);
+        elizaLogger.error("Error in generateWebSearch:", error);
         throw error;
     }
 };
