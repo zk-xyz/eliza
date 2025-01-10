@@ -1499,14 +1499,15 @@ export const generateWebSearch = async (
         const tvly = tavily({ apiKey });
         const response = await tvly.search(query, {
             includeAnswer: true,
-            maxResults: 3, // 5 (default)
-            topic: "general", // "general"(default) "news"
-            searchDepth: "basic", // "basic"(default) "advanced"
-            includeImages: false, // false (default) true
+            maxResults: 3,
+            topic: "general",
+            searchDepth: "basic",
+            includeImages: false,
         });
         return response;
     } catch (error) {
         elizaLogger.error("Error:", error);
+        throw error;
     }
 };
 /**

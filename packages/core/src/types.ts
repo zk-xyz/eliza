@@ -1,5 +1,17 @@
 import { Readable } from "stream";
 
+// Define the interface based on the Tavily API response structure
+export interface SearchResponse {
+  results: Array<{
+    title: string;
+    url: string;
+    content: string;
+    score: number;
+    publishedDate?: string;
+  }>;
+  answer?: string;  // Adding the answer property
+}
+
 /**
  * Represents a UUID string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  */
@@ -1272,14 +1284,6 @@ export type SearchResult = {
     rawContent?: string;
     score: number;
     publishedDate?: string;
-};
-
-export type SearchResponse = {
-    answer?: string;
-    query: string;
-    responseTime: number;
-    images: SearchImage[];
-    results: SearchResult[];
 };
 
 export enum ServiceType {
