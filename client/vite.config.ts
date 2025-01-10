@@ -30,10 +30,9 @@ export default defineConfig({
         host: true,
         proxy: {
             "/api": {
-                target: `http://127.0.0.1:${process.env.SERVER_PORT || 3000}`,
+                target: process.env.VITE_SERVER_URL || `http://127.0.0.1:${process.env.SERVER_PORT || 3000}`,
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ""),
             },
         },
     },
-});
