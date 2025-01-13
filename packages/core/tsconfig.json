@@ -2,10 +2,7 @@
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
-        "lib": [
-            "ESNext",
-            "dom"
-        ],
+        "lib": ["ESNext", "dom"],
         "moduleResolution": "Bundler",
         "outDir": "./dist",
         "rootDir": "./src",
@@ -23,20 +20,11 @@
         "noEmitOnError": false,
         "moduleDetection": "force",
         "allowArbitraryExtensions": true,
-        "customConditions": [
-            "@elizaos/source"
-        ],
+        "customConditions": ["@elizaos/source"],
         "paths": {
             "tavily": ["./node_modules/tavily", "./types/tavily.d.ts"]
         }
     },
-    "include": [
-        "src/**/*",
-        "types/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "types/**/*.test.ts"
-    ]
+    "include": ["src/**/*", "types/**/*"],
+    "exclude": ["node_modules", "dist", "src/**/*.d.ts", "types/**/*.test.ts"]
 }

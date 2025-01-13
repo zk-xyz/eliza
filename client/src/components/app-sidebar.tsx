@@ -1,5 +1,5 @@
 import { Calendar, Inbox, Menu } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +25,7 @@ const items = [
     },
     {
         title: "Character Overview",
-        url: "character",
+        url: "settings", // Changed to match your routes
         icon: Calendar,
     },
 ];
@@ -67,10 +67,10 @@ export function AppSidebar() {
                                             asChild
                                             tooltip={isMobile ? undefined : item.title}
                                         >
-                                            <a href={`/${agentId}/${item.url}`}>
+                                            <Link to={`/${agentId}/${item.url}`}>
                                                 <item.icon />
                                                 <span>{item.title}</span>
-                                            </a>
+                                            </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 ))}
@@ -78,7 +78,7 @@ export function AppSidebar() {
                         </SidebarGroupContent>
                     </SidebarGroup>
                 </SidebarContent>
-                <SidebarFooter>
+                <SidebarFooter className="px-2 py-2">
                     <ThemeToggle />
                 </SidebarFooter>
             </Sidebar>
