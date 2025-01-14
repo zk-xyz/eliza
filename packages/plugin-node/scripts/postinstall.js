@@ -55,10 +55,11 @@ if (!distro || !supportedDistros.some((name) => distro.includes(name))) {
 }
 
 try {
-    execSync("npx playwright install-deps && npx playwright install", {
+    // Only install browsers since system deps are handled by packages.txt
+    execSync("npx playwright install", {
         stdio: "inherit"
     });
 } catch (err) {
-    console.error("Failed to install Playwright dependencies:", err.message);
+    console.error("Failed to install Playwright:", err.message);
     process.exit(1);
 }
