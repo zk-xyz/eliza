@@ -1,22 +1,12 @@
 # Use a specific Node.js version for better reproducibility
 FROM node:23.3.0-slim AS builder
 
-# Skip problematic installations while keeping essential scripts
-ENV NODE_ENV=production
-ENV SKIP_LLAMA_INSTALL=1
-ENV SKIP_PLUGIN_INSTALL=1
-ENV SKIP_BINARY_DOWNLOAD=1
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
 # Install pnpm globally and install necessary build tools
 RUN npm install -g pnpm@9.4.0 && \
     apt-get update && \
     apt-get install -y git python3 make g++ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Prevent youtube-dl-exec from trying to update
-ENV YTDL_NO_UPDATE=1
 
 # Set Python 3 as the default python
 RUN ln -s /usr/bin/python3 /usr/bin/python
@@ -32,6 +22,14 @@ COPY agent ./agent
 COPY packages ./packages
 COPY scripts ./scripts
 COPY characters ./characters
+
+# Set environment variables right before install/build
+ENV NODE_ENV=production
+ENV SKIP_LLAMA_INSTALL=1
+ENV SKIP_PLUGIN_INSTALL=1
+ENV SKIP_BINARY_DOWNLOAD=1
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV YTDL_NO_UPDATE=1
 
 # Install dependencies and build the project
 RUN pnpm install \
@@ -61,7 +59,7 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-# Let Render determine the port and set production environment
+# Runtime environment variables
 ENV NODE_ENV=production
 ENV HOST="0.0.0.0"
 ENV PORT=10000
