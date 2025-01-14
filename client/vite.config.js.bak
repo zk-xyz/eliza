@@ -1,0 +1,50 @@
+import path from "path";
+import { defineConfig } from "vite";
+import topLevelAwait from "vite-plugin-top-level-await";
+import react from "@vitejs/plugin-react-swc";
+import wasm from "vite-plugin-wasm";
+import viteCompression from "vite-plugin-compression";
+import { config } from "dotenv";
+config({ path: path.resolve(__dirname, "../.env") });
+export default defineConfig({
+    plugins: [
+        wasm(),
+        topLevelAwait(),
+        react(),
+        viteCompression({
+            algorithm: "brotliCompress",
+            ext: ".br",
+            threshold: 1024,
+        }),
+    ],
+    clearScreen: false,
+    logLevel: 'info', // Add this line for more detailed logs
+    build: {
+        outDir: "dist",
+        minify: true,
+        cssMinify: true,
+        sourcemap: true, // Enable sourcemaps for debugging
+        cssCodeSplit: true,
+        commonjsOptions: {
+            exclude: ["onnxruntime-node", "@anush008/tokenizers"],
+        },
+        rollupOptions: {
+            external: ["onnxruntime-node", "@anush008/tokenizers"],
+        },
+    },
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
+    },
+    server: {
+        host: true,
+        proxy: {
+            "/api": {
+                target: process.env.VITE_SERVER_URL || `http://127.0.0.1:${process.env.SERVER_PORT || 3000}`,
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ""),
+            },
+        },
+    },
+});

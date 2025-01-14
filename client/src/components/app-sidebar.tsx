@@ -1,8 +1,5 @@
-import { Calendar, Inbox, Menu } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
-
+import { useQuery } from "@tanstack/react-query";
+import info from "@/lib/info.json";
 import {
     Sidebar,
     SidebarContent,
@@ -10,78 +7,113 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    useSidebar,
+    SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
-
-// Menu items
-const items = [
-    {
-        title: "Chat",
-        url: "chat",
-        icon: Inbox,
-    },
-    {
-        title: "Character Overview",
-        url: "settings", // Changed to match your routes
-        icon: Calendar,
-    },
-];
-
-function MobileMenuTrigger() {
-    const { isMobile, openMobile, setOpenMobile } = useSidebar();
-    
-    if (!isMobile) return null;
-    
-    return (
-        <Button
-            variant="ghost"
-            size="icon"
-            className="fixed left-4 top-4 z-40 h-8 w-8 rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden"
-            onClick={() => setOpenMobile(!openMobile)}
-        >
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
-        </Button>
-    );
-}
+import { apiClient } from "@/lib/api";
+import { NavLink } from "react-router";
+import { type UUID } from "@elizaos/core";
+import { Book, Cog, User } from "lucide-react";
+import ConnectionStatus from "./connection-status";
 
 export function AppSidebar() {
-    const { agentId } = useParams();
-    const { isMobile } = useSidebar();
+    const query = useQuery({
+        queryKey: ["agents"],
+        queryFn: () => apiClient.getAgents(),
+        refetchInterval: 5_000,
+    });
+
+    const agents = query?.data?.agents;
 
     return (
-        <>
-            <MobileMenuTrigger />
-            <Sidebar>
-                <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupLabel>Application</SidebarGroupLabel>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {items.map((item) => (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton 
-                                            asChild
-                                            tooltip={isMobile ? undefined : item.title}
-                                        >
-                                            <Link to={`/${agentId}/${item.url}`}>
-                                                <item.icon />
-                                                <span>{item.title}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                </SidebarContent>
-                <SidebarFooter className="px-2 py-2">
-                    <ThemeToggle />
-                </SidebarFooter>
-            </Sidebar>
-        </>
+        <Sidebar>
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size="lg" asChild>
+                            <NavLink to="/">
+                                <img
+                                    src="/elizaos-icon.png"
+                                    width="100%"
+                                    height="100%"
+                                    className="size-7"
+                                />
+                                <div className="flex flex-col gap-0.5 leading-none">
+                                    <span className="font-semibold">ElizaOS</span>
+                                    <span className="">v{info?.version}</span>
+                                </div>
+                            </NavLink>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Agents</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {query?.isPending ? (
+                                <div>
+                                    {Array.from({ length: 5 }).map((_, index) => (
+                                        <SidebarMenuItem key={index}>
+                                            <SidebarMenuSkeleton />
+                                        </SidebarMenuItem>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div>
+                                    {agents?.map((agent: { id: UUID; name: string }) => (
+                                        <SidebarMenuItem key={agent.id}>
+                                            <NavLink
+                                                to={`/chat/${agent.id}`}
+                                                className={({ isActive }) =>
+                                                    isActive ? "w-full" : "w-full"
+                                                }
+                                            >
+                                                {({ isActive }) => (
+                                                    <SidebarMenuButton
+                                                        className={
+                                                            isActive
+                                                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                                                : ""
+                                                        }
+                                                    >
+                                                        <User />
+                                                        <span>{agent.name}</span>
+                                                    </SidebarMenuButton>
+                                                )}
+                                            </NavLink>
+                                        </SidebarMenuItem>
+                                    ))}
+                                </div>
+                            )}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <NavLink
+                            to="https://elizaos.github.io/eliza/docs/intro/"
+                            target="_blank"
+                        >
+                            <SidebarMenuButton>
+                                <Book /> Documentation
+                            </SidebarMenuButton>
+                        </NavLink>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton disabled>
+                            <Cog /> Settings
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <ConnectionStatus />
+                </SidebarMenu>
+            </SidebarFooter>
+        </Sidebar>
     );
 }

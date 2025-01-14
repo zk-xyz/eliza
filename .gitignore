@@ -61,3 +61,9 @@ agent/content
 eliza.manifest
 eliza.manifest.sgx
 eliza.sig
+
+# Generated files
+src/lib/info.json
+
+#backups
+client/package.json.bak

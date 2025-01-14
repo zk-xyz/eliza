@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useToast } from "./use-toast";
 import info from "@/lib/info.json";
 import semver from "semver";
 import { ToastAction } from "@/components/ui/toast";
-import { NavLink } from "react-router";
+import { Link } from "react-router-dom"; // Changed from NavLink to Link
 
 export default function useVersion() {
     const { toast } = useToast();
 
-    async function getLatestRelease(repo: string) {
+    const getLatestRelease = useCallback(async (repo: string) => {
         const apiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
 
         try {
@@ -26,47 +26,63 @@ export default function useVersion() {
             }
 
             const data = await response.json();
-            const latestVersion = data.tag_name;
-            return latestVersion;
-        } catch {}
-    }
+            return data.tag_name;
+        } catch (error) {
+            console.error("Error fetching latest release:", error);
+            return null;
+        }
+    }, []);
 
-    const compareVersion = async () => {
+    const compareVersion = useCallback(async () => {
         try {
             const latestVersion = await getLatestRelease("elizaos/eliza");
             const thisVersion = info?.version;
-            if (latestVersion && thisVersion) {
-                if (
-                    semver.gt(
-                        latestVersion.replace("v", ""),
-                        thisVersion.replace("v", "")
-                    )
-                ) {
-                    toast({
-                        variant: "default",
-                        title: `New version ${latestVersion} is available.`,
-                        description: "Visit GitHub for more information.",
-                        action: (
-                            <NavLink
-                                to="https://github.com/elizaos/eliza/releases"
-                                target="_blank"
-                            >
-                                <ToastAction altText="Update">
-                                    Update
-                                </ToastAction>
-                            </NavLink>
-                        ),
-                    });
-                }
+            
+            if (!latestVersion || !thisVersion) {
+                return;
             }
-        } catch (e) {
-            console.error("Unable to retrieve latest version from GitHub");
+
+            const latest = latestVersion.replace("v", "");
+            const current = thisVersion.replace("v", "");
+
+            if (semver.gt(latest, current)) {
+                toast({
+                    variant: "default",
+                    title: `New version ${latestVersion} is available.`,
+                    description: "Visit GitHub for more information.",
+                    action: (
+                        <Link
+                            to="https://github.com/elizaos/eliza/releases"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <ToastAction altText="Update">
+                                Update
+                            </ToastAction>
+                        </Link>
+                    ),
+                });
+            }
+        } catch (error) {
+            console.error("Unable to retrieve latest version from GitHub:", error);
         }
-    };
+    }, [toast, getLatestRelease]);
 
     useEffect(() => {
-        compareVersion();
-    }, []);
+        let mounted = true;
+
+        const checkVersion = async () => {
+            if (mounted) {
+                await compareVersion();
+            }
+        };
+
+        checkVersion();
+
+        return () => {
+            mounted = false;
+        };
+    }, [compareVersion]);
 
     return null;
 }
