@@ -1,6 +1,10 @@
 # Use a specific Node.js version for better reproducibility
 FROM node:23.3.0-slim AS builder
 
+# Add this environment variable to skip problematic postinstall scripts
+ENV SKIP_NODE_POSTINSTALL=1
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 # Install pnpm globally and install necessary build tools
 RUN npm install -g pnpm@9.4.0 && \
     apt-get update && \
