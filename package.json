@@ -23,7 +23,7 @@
         "test": "bash ./scripts/test.sh",
         "smokeTests": "bash ./scripts/smokeTests.sh",
         "integrationTests": "bash ./scripts/integrationTests.sh",
-        "postinstall": "node postinstall.js"
+        "postinstall": "node packages/plugin-node/scripts/postinstall.js"
     },
     "devDependencies": {
         "@commitlint/cli": "18.6.1",
