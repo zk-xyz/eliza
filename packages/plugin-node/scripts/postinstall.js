@@ -55,11 +55,15 @@ if (!distro || !supportedDistros.some((name) => distro.includes(name))) {
 }
 
 try {
-    // Only install browsers since system deps are handled by packages.txt
-    execSync("npx playwright install", {
-        stdio: "inherit"
+    // Set Playwright to install browsers locally
+    process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
+    
+    // Install both dependencies and browsers
+    execSync("npx playwright install-deps && npx playwright install", {
+        stdio: "inherit",
+        env: { ...process.env }  // Make sure the PLAYWRIGHT_BROWSERS_PATH is passed
     });
 } catch (err) {
-    console.error("Failed to install Playwright:", err.message);
+    console.error("Failed to install Playwright dependencies:", err.message);
     process.exit(1);
 }
