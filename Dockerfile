@@ -24,7 +24,6 @@ COPY scripts ./scripts
 COPY characters ./characters
 
 # Set environment variables right before install/build
-ENV NODE_ENV=production
 ENV SKIP_LLAMA_INSTALL=1
 ENV SKIP_PLUGIN_INSTALL=1
 ENV SKIP_BINARY_DOWNLOAD=1
