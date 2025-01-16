@@ -51,5 +51,10 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-# Set the command to run the application
-CMD ["pnpm", "start"]
+# For Render
+ENV HOST="0.0.0.0"
+ENV PORT=10000
+EXPOSE 10000
+
+# Update CMD to include character
+CMD ["pnpm", "start", "--character=characters/claude_agent.character.json"]
