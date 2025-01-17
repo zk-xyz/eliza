@@ -72,14 +72,12 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-# Copy and set up the entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # For Render
 ENV HOST="0.0.0.0"
 ENV PORT=10000
 EXPOSE 10000
-
+# Copy and set up the entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # Use the entrypoint script
 ENTRYPOINT ["docker-entrypoint.sh"]

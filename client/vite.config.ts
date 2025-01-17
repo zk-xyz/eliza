@@ -30,7 +30,7 @@ export default defineConfig({
     },
     server: {
         host: true,
-        port: parseInt(process.env.PORT || '5173'),
+        port: process.env.NODE_ENV === 'production' ? 10000 : 5173,  // Use fixed ports
         proxy: {
             "/api": {
                 target: process.env.NODE_ENV === 'production'
