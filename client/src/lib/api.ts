@@ -1,6 +1,8 @@
 import { type UUID, type Character } from "@elizaos/core";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NODE_ENV === 'production'
+    ? 'https://eliza-p4r5.onrender.com'
+    : 'http://localhost:3000';
 
 const fetcher = async ({
     url,
