@@ -1,14 +1,9 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import viteCompression from 'vite-plugin-compression'
-import { config } from 'dotenv'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import viteCompression from "vite-plugin-compression";
+import path from "path";
 
-// Load local .env file for development environment
-if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-    config({ path: path.resolve(__dirname, "../.env") })
-}
-
+// https://vite.dev/config/
 export default defineConfig({
     plugins: [
         react(),
@@ -19,23 +14,17 @@ export default defineConfig({
         }),
     ],
     clearScreen: false,
+    envDir: path.resolve(__dirname, ".."),
     build: {
         outDir: "dist",
         minify: true,
         cssMinify: true,
         sourcemap: false,
         cssCodeSplit: true,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    'react-vendor': ['react', 'react-dom'],
-                },
-            },
-        },
     },
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "./src"),
+            "@": "/src",
         },
     },
     server: {
@@ -45,7 +34,7 @@ export default defineConfig({
             "/api": {
                 target: process.env.NODE_ENV === 'production'
                     ? process.env.VITE_SERVER_URL
-                    : `http://localhost:${process.env.SERVER_PORT || 3000}`,
+                    : `http://localhost:${process.env.PORT || 3000}`,
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ""),
                 secure: false,
@@ -57,4 +46,4 @@ export default defineConfig({
         port: 10000,
         strictPort: true
     }
-})
+});
