@@ -1,12 +1,20 @@
 #!/bin/sh
 
+echo "Starting production service..."
+echo "Service type: $SERVICE_TYPE"
+
 if [ "$SERVICE_TYPE" = "client" ]; then
     echo "Starting client service..."
-    # First make sure the client is built
-    cd client && pnpm run build
-    # Use a static file server to serve the built files
-    exec pnpm exec vite preview --host 0.0.0.0 --port $PORT
+    cd client
+    
+    # Build and serve the client
+    echo "Building client..."
+    pnpm run build
+    
+    echo "Starting preview server..."
+    exec pnpm exec vite preview --host 0.0.0.0 --port 10000 --strictPort true
 else
     echo "Starting agent service..."
+    cd agent
     exec pnpm start --character=characters/claude_agent.character.json
 fi

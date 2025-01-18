@@ -72,12 +72,17 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-# For Render
-ENV HOST="0.0.0.0"
+# Production environment variables
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
 ENV PORT=10000
+
+# Expose port
 EXPOSE 10000
-# Copy and set up the entrypoint script
+
+# Copy and set up entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-# Use the entrypoint script
+
+# The entrypoint script will handle client vs agent based on SERVICE_TYPE
 ENTRYPOINT ["docker-entrypoint.sh"]
