@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react-swc";
 import viteCompression from "vite-plugin-compression";
 import path from "path";
 
-// https://vite.dev/config/
+const isProd = process.env.NODE_ENV === 'production';
+
 export default defineConfig({
     plugins: [
         react(),
@@ -29,17 +30,7 @@ export default defineConfig({
     },
     server: {
         host: true,
-        port: process.env.NODE_ENV === 'production' ? 10000 : 5173,
-        proxy: {
-            "/api": {
-                target: import.meta.env.PROD
-                    ? 'https://eliza-p4r5.onrender.com'
-                    : 'http://localhost:3000',
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ""),
-                secure: false,
-            },
-        },
+        port: isProd ? 10000 : 5173,
     },
     preview: {
         host: '0.0.0.0',
