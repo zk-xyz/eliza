@@ -6,7 +6,9 @@ echo "Service type: $SERVICE_TYPE"
 
 if [ "$SERVICE_TYPE" = "client" ]; then
     echo "Starting client service..."
-    pnpm start:client
+    cd client
+    pnpm run build
+    exec pnpm exec vite preview
 elif [ "$SERVICE_TYPE" = "agent" ]; then
     echo "Starting agent service..."
     pnpm start --character=characters/claude_agent.character.json
