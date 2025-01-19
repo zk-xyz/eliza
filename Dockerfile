@@ -4,6 +4,8 @@ FROM node:23.3.0-slim AS builder
 # Add these lines
 ARG GITHUB_TOKEN
 ARG NPM_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+ENV NPM_TOKEN=${NPM_TOKEN}
 
 # Install pnpm globally and necessary build tools
 RUN npm install -g pnpm@9.4.0 && \
