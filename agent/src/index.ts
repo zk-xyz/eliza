@@ -1017,9 +1017,8 @@ const checkPortAvailable = (port: number): Promise<boolean> => {
 const startAgents = async () => {
     const directClient = new DirectClient();
     let serverPort = process.env.NODE_ENV === 'production'
-        ? parseInt(process.env.PORT || "10000") 
-        : parseInt(settings.SERVER_PORT || "3000");
-
+        ? 10000  // Explicitly use port 10000 for Render
+        : parseInt(settings.SERVER_PORT || "3000");  // Use SERVER_PORT from .env for development
     const args = parseArguments();
     let charactersArg = args.characters || args.character;
     let characters = [defaultCharacter];
@@ -1048,23 +1047,20 @@ const startAgents = async () => {
     directClient.startAgent = async (character) => {
         // Handle plugins
         character.plugins = await handlePluginImporting(character.plugins);
+
+        // wrap it so we don't have to inject directClient later
         return startAgent(character, directClient);
     };
 
-    // Start the server
     directClient.start(serverPort);
 
-    // Update logging based on environment
-    if (process.env.NODE_ENV === 'production') {
-        elizaLogger.log(`Server started in production mode on port ${serverPort}`);
-    } else {
-        if (serverPort !== parseInt(settings.SERVER_PORT || "3000")) {
-            elizaLogger.log(`Server started on alternate port ${serverPort}`);
-        }
-        elizaLogger.log(
-            "Run `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents. When running multiple agents, use client with different port `SERVER_PORT=3001 pnpm start:client`"
-        );
+    if (serverPort !== parseInt(settings.SERVER_PORT || "3000")) {
+        elizaLogger.log(`Server started on alternate port ${serverPort}`);
     }
+
+    elizaLogger.log(
+        "Run `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents. When running multiple agents, use client with different port `SERVER_PORT=3001 pnpm start:client`"
+    );
 };
 
 startAgents().catch((error) => {

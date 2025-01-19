@@ -37,6 +37,13 @@ WORKDIR /app
 # Copy application code
 COPY . .
 
+ARG GITHUB_TOKEN
+RUN if [ -n "$GITHUB_TOKEN" ]; then \
+    npm config set //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN} && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > .npmrc && \
+    echo "@anyone-protocol:registry=https://npm.pkg.github.com" >> .npmrc; \
+    fi
+    
 # Install dependencies
 RUN pnpm install
 

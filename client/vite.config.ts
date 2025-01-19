@@ -29,12 +29,12 @@ export default defineConfig({
     },
     server: {
         host: true,
-        port: process.env.NODE_ENV === 'production' ? 10000 : 5173,
+        port: 5173, // Development server port
         proxy: {
             "/api": {
                 target: process.env.NODE_ENV === 'production'
-                    ? process.env.VITE_SERVER_URL
-                    : `http://localhost:${process.env.PORT || 3000}`,
+                    ? process.env.VITE_SERVER_URL 
+                    : `http://localhost:${process.env.SERVER_PORT || "3000"}`, // Use SERVER_PORT to match agent
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ""),
                 secure: false,

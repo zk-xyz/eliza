@@ -1,6 +1,6 @@
 import { type UUID, type Character } from "@elizaos/core";
 
-const BASE_URL = process.env.NODE_ENV === 'production'
+const BASE_URL = import.meta.env.PROD
     ? 'https://eliza-p4r5.onrender.com'
     : 'http://localhost:3000';
 
