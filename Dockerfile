@@ -1,6 +1,10 @@
 # Use a specific Node.js version for better reproducibility
 FROM node:23.3.0-slim AS builder
 
+# Add these lines
+ARG GITHUB_TOKEN
+ARG NPM_TOKEN
+
 # Install pnpm globally and necessary build tools
 RUN npm install -g pnpm@9.4.0 && \
     apt-get update && \
@@ -37,13 +41,9 @@ WORKDIR /app
 # Copy application code
 COPY . .
 
-ARG GITHUB_TOKEN
-RUN if [ -n "$GITHUB_TOKEN" ]; then \
-    npm config set //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN} && \
-    echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > .npmrc && \
-    echo "@anyone-protocol:registry=https://npm.pkg.github.com" >> .npmrc; \
-    fi
-    
+# Before pnpm install
+RUN git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
 # Install dependencies
 RUN pnpm install
 
